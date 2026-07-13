@@ -19,16 +19,21 @@ public class Event implements Serializable {
 
     private String title;
 
+    @Column(length = 1000)
     private String description;
 
     private LocalDateTime dateTime;
 
-    private String organizerName;
-
     private String eventLink;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "event_attendees", joinColumns = @JoinColumn(name = "event_id"))
+    @Column(name = "attendee")
     private Set<String> attendees = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizer_id")
+    private User organizer;
 
     public Event() {
     }
@@ -65,14 +70,6 @@ public class Event implements Serializable {
         this.dateTime = dateTime;
     }
 
-    public String getOrganizerName() {
-        return organizerName;
-    }
-
-    public void setOrganizerName(String organizerName) {
-        this.organizerName = organizerName;
-    }
-
     public String getEventLink() {
         return eventLink;
     }
@@ -87,5 +84,13 @@ public class Event implements Serializable {
 
     public void setAttendees(Set<String> attendees) {
         this.attendees = attendees;
+    }
+
+    public User getOrganizer() {
+        return organizer;
+    }
+
+    public void setOrganizer(User organizer) {
+        this.organizer = organizer;
     }
 }
